@@ -49,7 +49,7 @@
 
 <header>
   <!-- leave src empty, we'll set it in JS to ensure correct IMAGES_PREFIX usage -->
-  <img id="logo" src="images/logo.png" alt="logo">
+  <img id="logo" src="" alt="logo">
   <div>
     <div class="brand">Warung Pak Jhon Regency</div>
     <div style="font-size:12px;opacity:.9">Ruko De Blossom Ville, Blok E3 No.11, Sepinggan</div>
@@ -81,8 +81,8 @@
           <input id="login_id" placeholder="Email atau No HP">
           <input id="login_pw" placeholder="Password" type="password">
           <button class="btn btn-add" onclick="login()">Masuk</button>
-          <div style="margin-top:10px;color:var(--muted)">tanpa login klik <b>tanpa login</b> melihat menu tanpa login </div>
-          <button style="margin-top:8px" class="btn btn-view" onclick="tanpa login()">tanpa login</button>
+          <div style="margin-top:10px;color:var(--muted)">Demo: klik <b>Demo User</b> untuk cepat coba fitur.</div>
+          <button style="margin-top:8px" class="btn btn-view" onclick="demoLogin()">Demo User</button>
         </div>
       </div>
     </div>
@@ -90,8 +90,8 @@
     <!-- DASHBOARD / MENU PAGE -->
     <div id="pageMenu" class="page panel">
       <div class="hero panel">
-        <h2 id="greeting">Halo, Customer</h2>
-        <div style="color:var(--muted)">Silakan pilih kategori, tambah ke keranjang, atur pengiriman & checkout</div>
+        <h2 id="greeting">Halo, Pengunjung</h2>
+        <div style="color:var(--muted)">Silakan pilih kategori, tambah ke keranjang, lalu atur pengiriman & checkout.</div>
       </div>
 
       <div class="panel">
@@ -102,7 +102,7 @@
 
         <div style="margin-top:12px" class="categories" id="cats"></div>
         <div class="search">
-          <input id="search" placeholder="semua" oninput="renderMenu()">
+          <input id="search" placeholder="Cari menu..." oninput="renderMenu()">
           <select id="sort" onchange="renderMenu()">
             <option value="default">Urut</option>
             <option value="price_asc">Minuman↓</option>
@@ -117,7 +117,7 @@
 
     <!-- CHECKOUT / NOTA PAGE -->
     <div id="pageNota" class="page panel">
-      <h2>Nota Pelanggan</h2>
+      <h2>Ringkasan & Nota</h2>
       <div id="notaContent"></div>
       <div style="margin-top:12px;display:flex;gap:8px">
         <button class="btn btn-add" onclick="printNota()">Cetak / Print Nota</button>
@@ -188,11 +188,11 @@ const PLACEHOLDER_DATAURI = 'data:image/svg+xml;utf8,' + encodeURIComponent(
 
 /* menu items: make sure these img names match files in your images folder (exactly) */
 const MENU = [
-  {id:'nk_telur', name:'Nasi Kuning - Telur', price:13000, img:'nk_telur.jpg', category:'Makanan'},
-  {id:'nk_daging', name:'Nasi Kuning - Daging', price:16000, img:'nk_daging.jpg', category:'Makanan'},
-  {id:'nk_ikan', name:'Nasi Kuning - Ikan', price:20000, img:'nk_ikan.jpg', category:'Makanan'},
-  {id:'nk_ayam_bakar', name:'Nasi Kuning - Ayam Bakar', price:16000, img:'nasi kuning ayam bakar.jpg', category:'Makanan'},
-  {id:'nk_ayamkrispi', name:'Nasi Kuning - Ayam Krispi', price:16000, img:'nk_ayam krispi.jpg', category:'Makanan'},
+  {id:'nk_telur', name:'Nasi Kuning - Telur', price:13000, img:'nk_telur.jpg', category:'Nasi Kuning'},
+  {id:'nk_daging', name:'Nasi Kuning - Daging', price:16000, img:'nk_daging.jpg', category:'Nasi Kuning'},
+  {id:'nk_ikan', name:'Nasi Kuning - Ikan', price:20000, img:'nk_ikan.jpg', category:'Nasi Kuning'},
+  {id:'nk_ayam_bakar', name:'Nasi Kuning - Ayam Bakar', price:16000, img:'nasi kuning ayam bakar.jpg', category:'Nasi Kuning'},
+  {id:'nk_ayamkrispi', name:'Nasi Kuning - Ayam Krispi', price:16000, img:'nk_ayam krispi.jpg', category:'Nasi Kuning'},
   {id:'paket_tumpeng', name:'Paket Tumpeng', price:300000, img:'paket_tumpeng.jpg', category:'paket'},
   {id:'paket_hampers', name:'Paket Hampers', price:250000, img:'paket_hampers.jpg', category:'paket'},
   {id:'paket_liwetan', name:'Paket Liwetan', price:150000, img:'paket_liwetan.jpg', category:'paket'},
@@ -200,7 +200,7 @@ const MENU = [
   {id:'es_alpukat', name:'Es Alpukat', price:5000, img:'es_alpukat.jpg', category:'es'},
   {id:'es_sirsak', name:'Es Sirsak', price:5000, img:'es_sirsak.jpg', category:'es'},
   {id:'es_kuwud', name:'Es Kuwud', price:5000, img:'es_kuwud.jpg', category:'es'},
-  {id:'es_teh', name:'Es Teh', price:3000, img:'es_teh.jpg', category:'es'}
+  {id:'es_teh', name:'Es Teh', price:3000, img:'es_teh.jpg', category:'Minuman'}
 ];
 
 
@@ -435,4 +435,3 @@ function clearCart(){ if(confirm('Kosongkan keranjang?')){ state.cart=[]; saveSt
 </script>
 </body>
 </html>
-
