@@ -1,232 +1,283 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Warung Pak Jhon Regency</title>
-<style>
-:root{
-  --bg:#f6f7f8; --card:#fff; --muted:#6b7280; --accent:#f6b21a; --primary:#0f6a63;
-  --shadow:0 6px 20px rgba(15,31,41,.06);
-}
-*{box-sizing:border-box}
-body{font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);margin:0;color:#111}
-header{background:linear-gradient(90deg,#0b4b47,#0f6a63);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px}
-header img{width:56px;height:56px;border-radius:8px;object-fit:cover}
-.wrap{max-width:1100px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:1fr 340px;gap:18px}
-.panel{background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
-.cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.chip{padding:8px 12px;border-radius:999px;border:1px solid #e9ecef;background:#fff;cursor:pointer}
-.chip.active{background:var(--primary);color:#fff;border-color:transparent}
-.controls{display:flex;gap:10px;align-items:center;margin-bottom:12px}
-.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.card{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;border:1px solid #f1f1f1;background:#fff}
-.card img{width:110px;height:78px;object-fit:cover;border-radius:8px;flex-shrink:0}
-.info{flex:1}
-.price{font-weight:700;margin-top:8px}
-.btn{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
-.btn-add{background:var(--accent);color:#111;font-weight:700}
-small{color:var(--muted)}
-.debug{margin-top:18px;padding:12px;border-radius:8px;background:#fff;border:1px solid #eee}
-.missing-list{color:#b03030}
-@media(max-width:980px){.wrap{grid-template-columns:1fr}.menu-grid{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warung Pak Jhon Regency</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #fff;
+      --primary: #0f6a63;
+      --accent: #f6b21a;
+      --muted: #666;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; font-family: 'Inter', Arial, sans-serif; }
+    body { background: var(--bg); margin: 0; color: #111; }
 
+    header {
+      background: linear-gradient(90deg, #0b4b47, #0f6a63);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+    }
+    header img {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    main {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 18px auto;
+      padding: 0 16px;
+    }
+    .panel {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    .cats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .chip {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .controls input, .controls select {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      box-shadow: var(--shadow);
+    }
+    .card img {
+      width: 110px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .info { flex: 1; }
+    .info h4 { margin: 0; font-size: 15px; font-weight: 600; }
+    .info .price { margin-top: 4px; font-weight: 700; }
+    .btn {
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 7px 10px;
+      margin-top: 4px;
+      font-size: 13px;
+    }
+    .btn-add { background: var(--accent); color: #111; font-weight: 700; }
+    .cart {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+    .cart h3 { margin-top: 0; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin: 16px 0;
+    }
+    @media(max-width:900px) {
+      main { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
 <header>
-  <img id="logo" src="" alt="logo">
-  <div style="font-weight:700">Warung Pak Jhon Regency</div>
+  <img id="logo" src="" alt="Logo Warung">
+  <div>
+    <h1>Warung Pak Jhon Regency</h1>
+    <div style="font-size:13px;opacity:0.8;">Ruko De Blossom Ville, Blok E3 No.11, Sepinggan</div>
+  </div>
 </header>
 
-<main class="wrap">
-  <section>
-    <div class="panel">
-      <h2>Daftar Menu</h2>
+<main>
+  <section class="panel">
+    <h2>Daftar Menu</h2>
 
-      <div class="controls" style="justify-content:space-between">
-        <div class="cats" id="categoryButtons"></div>
+    <div class="cats" id="categoryButtons"></div>
 
-        <div style="display:flex;gap:8px;align-items:center">
-          <input id="search" placeholder="Cari menu..." style="padding:8px;border-radius:8px;border:1px solid #e6e6e6" oninput="renderMenu()">
-          <select id="sort" onchange="renderMenu()" style="padding:8px;border-radius:8px;border:1px solid #e6e6e6">
-            <option value="default">Urut</option>
-            <option value="price_asc">Harga ↑</option>
-            <option value="price_desc">Harga ↓</option>
-            <option value="name_asc">Nama A→Z</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="menuGrid" class="menu-grid"></div>
-
-      <!-- Debug: tampilkan daftar gambar yang gagal dimuat -->
-      <div class="debug">
-        <h4>Missing Images (cek & perbaiki)</h4>
-        <p style="margin:6px 0;color:var(--muted)">Jika ada item di bawah, berarti browser mencoba memuat nama file tersebut tapi gagal (404). Pastikan file ada di folder <code>images/</code> di repo dan nama persis sama (case-sensitive).</p>
-        <ul id="missingImages" class="missing-list"></ul>
-        <p style="margin-top:8px"><small>Tip: bila file namanya mengandung spasi, lebih baik rename file (git mv) jadi tanpa spasi, lalu sesuaikan nama di array <code>MENU</code>.</small></p>
-      </div>
+    <div class="controls">
+      <input id="search" placeholder="Cari menu..." oninput="renderMenu()">
+      <select id="sort" onchange="renderMenu()">
+        <option value="default">Urutkan</option>
+        <option value="price_asc">Harga ↑</option>
+        <option value="price_desc">Harga ↓</option>
+        <option value="name_asc">Nama A→Z</option>
+      </select>
     </div>
+
+    <div id="menuGrid" class="menu-grid"></div>
   </section>
 
-  <aside>
-    <div class="panel">
-      <h3>Info Cepat</h3>
-      <p><small>Pastikan folder <code>images/</code> berisi semua file gambar yang tertulis di <code>MENU</code>. Jika gambar tidak muncul, buka debug > Missing Images untuk melihat nama file yang gagal dimuat.</small></p>
-      <p style="margin-top:10px"><small>Contoh test langsung (paste ke browser):<br>
-      <code>https://alifshifwha08.github.io/warung-pak-john-regency/images/es_teh.jpg</code></small></p>
-    </div>
+  <aside class="cart">
+    <h3>Keranjang</h3>
+    <div id="cartItems" style="min-height:60px;color:#888;">Belum ada item</div>
+    <hr>
+    <div><strong>Total:</strong> Rp <span id="total">0</span></div>
+    <button class="btn btn-add" style="width:100%;margin-top:10px" onclick="checkout()">Checkout</button>
   </aside>
 </main>
 
-<footer style="text-align:center;margin:16px 0;color:var(--muted)">© 2025 Warung Pak Jhon Regency</footer>
+<footer>© 2025 Warung Pak Jhon Regency</footer>
 
 <script>
-/*
-FINAL index.html helper:
-- EDIT MENU array di bawah agar berisi semua item & nama file img persis seperti di folder images/
-- Kode akan menampilkan kategori, filter, dan menampilkan daftar nama file yg gagal dimuat
-*/
-
-// folder images (pastikan folder di root repo bernama "images")
 const IMAGES_PREFIX = 'images/';
+const PLACEHOLDER = 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120"><rect width="100%" height="100%" fill="#eee"/><text x="50%" y="50%" fill="#aaa" font-size="14" text-anchor="middle">No Image</text></svg>');
 
-// inline fallback image (tidak perlu upload file placeholder)
-const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#bbb" font-size="20">No Image</text></svg>'
-);
-
-/* ====== MENU: === EDIT DISINI ==== 
-   Pastikan nama file di img: sama persis (case sensitive) dengan file di folder images/.
-   Tambah / ubah entry sesuai kebutuhan. */
 const MENU = [
-  {id:'nk_telur', name:'Nasi Kuning - Telur', price:13000, img:'nk_telur.jpg', category:'Nasi Kuning'},
-  {id:'nk_daging', name:'Nasi Kuning - Daging', price:16000, img:'nk_daging.jpg', category:'Nasi Kuning'},
-  {id:'nk_ikan', name:'Nasi Kuning - Ikan', price:20000, img:'nk_ikan.jpg', category:'Nasi Kuning'},
-  {id:'nk_ayam_bakar', name:'Nasi Kuning - Ayam Bakar', price:16000, img:'nasi kuning ayam bakar.jpg', category:'Nasi Kuning'},
-  {id:'nk_ayam_krispi', name:'Nasi Kuning - Ayam Krispi', price:16000, img:'nk_ayam krispi.jpg', category:'Nasi Kuning'},
-  {id:'paket_tumpeng', name:'Paket Tumpeng', price:300000, img:'paket_tumpeng.jpg', category:'paket'},
-  {id:'paket_hampers', name:'Paket Hampers', price:250000, img:'paket_hampers.jpg', category:'paket'},
-  {id:'paket_liwetan', name:'Paket Liwetan', price:150000, img:'paket_liwetan.jpg', category:'paket'},
-  {id:'es_mangga', name:'Es Mangga', price:5000, img:'es_mangga.jpg', category:'Minuman'},
-  {id:'es_alpukat', name:'Es Alpukat', price:5000, img:'es_alpukat.jpg', category:'Minuman'},
-  {id:'es_sirsak', name:'Es Sirsak', price:5000, img:'es_sirsak.jpg', category:'Minuman'},
-  {id:'es_kuwud', name:'Es Kuwud', price:5000, img:'es_kuwud.jpg', category:'Minuman'},
-  {id:'es_teh', name:'Es Teh', price:3000, img:'es_teh.jpg', category:'Minuman'}
+  {id:'1',name:'Nasi Kuning - Telur',price:13000,img:'nk_telur.jpg',category:'Makanan'},
+  {id:'2',name:'Nasi Kuning - Daging',price:16000,img:'nk_daging.jpg',category:'Makanan'},
+  {id:'3',name:'Nasi Kuning - Ikan',price:20000,img:'nk_ikan.jpg',category:'Makanan'},
+  {id:'4',name:'Nasi Kuning - Ayam Bakar',price:16000,img:'nasi kuning ayam bakar.jpg',category:'Makanan'},
+  {id:'5',name:'Nasi Kuning - Ayam Krispi',price:16000,img:'nk_ayam krispi.jpg',category:'Makanan'},
+  {id:'6',name:'Paket Tumpeng',price:300000,img:'paket_tumpeng.jpg',category:'Paket'},
+  {id:'7',name:'Paket Hampers',price:250000,img:'paket_hampers.jpg',category:'Paket'},
+  {id:'8',name:'Paket Liwetan',price:150000,img:'paket_liwetan.jpg',category:'Paket'},
+  {id:'9',name:'Es Teh',price:3000,img:'es_teh.jpg',category:'Minuman'},
+  {id:'10',name:'Es Mangga',price:5000,img:'es_mangga.jpg',category:'Minuman'},
+  {id:'11',name:'Es Alpukat',price:5000,img:'es_alpukat.jpg',category:'Minuman'},
+  {id:'12',name:'Es Sirsak',price:5000,img:'es_sirsak.jpg',category:'Minuman'},
+  {id:'13',name:'Es Kuwud',price:5000,img:'es_kuwud.jpg',category:'Minuman'}
 ];
 
-/* ====== CATEGORY BUTTONS MAPPING =====
-   You can change labels and mapping logic here. 
-   Makanan = anything that is NOT category 'Minuman' (safe if your data mixes categories)
-*/
 const CATEGORY_BUTTONS = [
-  {label:'All', pred: () => true},
-  {label:'Makanan', pred: item => ((item.category||'').toLowerCase() !== 'minuman')},
-  {label:'paket', pred: item => ((item.category||'').toLowerCase().includes('paket'))},
-  {label:'es', pred: item => /es\s/i.test(item.name) || ((item.category||'').toLowerCase()==='minuman')},
-  {label:'Minuman', pred: item => ((item.category||'').toLowerCase() === 'minuman')}
+  {label:'All', pred:()=>true},
+  {label:'Makanan', pred:i=>i.category==='Makanan'},
+  {label:'Paket', pred:i=>i.category==='Paket'},
+  {label:'Es / Minuman', pred:i=>i.category==='Minuman'}
 ];
 
-/* ====== UI & render ====== */
-const el = id => document.getElementById(id);
-function rupiah(n){ return Number(n).toLocaleString('id-ID'); }
+let cart = [];
+
+function rupiah(x){return Number(x).toLocaleString('id-ID');}
 
 function renderCategories(){
-  const wrap = el('categoryButtons'); wrap.innerHTML='';
+  const wrap=document.getElementById('categoryButtons');
+  wrap.innerHTML='';
   CATEGORY_BUTTONS.forEach((c,i)=>{
-    const btn = document.createElement('button');
-    btn.className = 'chip' + (i===0? ' active':'');
-    btn.innerText = c.label;
-    btn.onclick = ()=>{
+    const b=document.createElement('button');
+    b.className='chip'+(i===0?' active':'');
+    b.innerText=c.label;
+    b.onclick=()=>{
       document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      btn.classList.add('active');
+      b.classList.add('active');
       renderMenu();
     };
-    wrap.appendChild(btn);
+    wrap.appendChild(b);
   });
 }
 
-function getActivePredicate(){
-  const active = document.querySelector('.chip.active');
-  if(!active) return CATEGORY_BUTTONS[0].pred;
-  const label = active.innerText;
-  const entry = CATEGORY_BUTTONS.find(c=>c.label===label);
-  return entry ? entry.pred : CATEGORY_BUTTONS[0].pred;
+function getActiveCategory(){
+  const a=document.querySelector('.chip.active');
+  return a?a.innerText:'All';
 }
-
-/* missing tracker */
-const missingSet = new Set();
 
 function renderMenu(){
-  const grid = el('menuGrid'); grid.innerHTML = '';
-  const q = (el('search').value || '').trim().toLowerCase();
-  const pred = getActivePredicate();
+  const grid=document.getElementById('menuGrid');
+  grid.innerHTML='';
+  const cat=getActiveCategory();
+  const q=document.getElementById('search').value.toLowerCase();
+  let items=MENU.filter(i=>{
+    let c=cat==='All'||(cat==='Es / Minuman'&&i.category==='Minuman')||(i.category===cat);
+    let s=i.name.toLowerCase().includes(q);
+    return c&&s;
+  });
+  const sort=document.getElementById('sort').value;
+  if(sort==='price_asc')items.sort((a,b)=>a.price-b.price);
+  if(sort==='price_desc')items.sort((a,b)=>b.price-a.price);
+  if(sort==='name_asc')items.sort((a,b)=>a.name.localeCompare(b.name));
 
-  let items = MENU.filter(it => pred(it) && (q === '' || it.name.toLowerCase().includes(q)));
-
-  const sort = el('sort').value;
-  if(sort === 'price_asc') items.sort((a,b)=>a.price-b.price);
-  if(sort === 'price_desc') items.sort((a,b)=>b.price-a.price);
-  if(sort === 'name_asc') items.sort((a,b)=>a.name.localeCompare(b.name));
-
-  if(items.length === 0){
-    grid.innerHTML = '<div style="padding:12px;color:var(--muted)">Tidak ada menu di kategori ini.</div>';
-    return;
-  }
-
-  items.forEach(it=>{
-    const card = document.createElement('div'); card.className='card';
-    const img = document.createElement('img');
-    img.alt = it.name;
-    img.src = IMAGES_PREFIX + encodeURIComponent(it.img);
-    img.onerror = ()=>{
-      // mark as missing (show in debug)
-      missingSet.add(it.img);
-      img.src = PLACEHOLDER;
-      renderMissingList();
-    };
-    img.onload = ()=>{
-      // if loaded successfully, remove from missing
-      if(missingSet.has(it.img)){ missingSet.delete(it.img); renderMissingList(); }
-    };
-    const info = document.createElement('div'); info.className='info';
-    info.innerHTML = `<div style="font-weight:700">${it.name}</div><div class="price">Rp ${rupiah(it.price)}</div>`;
-    const actions = document.createElement('div'); actions.style.display='flex'; actions.style.flexDirection='column'; actions.style.gap='8px';
-    const add = document.createElement('button'); add.className='btn btn-add'; add.innerText='Tambah';
-    const view = document.createElement('button'); view.className='btn'; view.innerText='+1 & Lihat';
-    actions.appendChild(add); actions.appendChild(view);
-
-    card.appendChild(img); card.appendChild(info); card.appendChild(actions);
-    grid.appendChild(card);
+  items.forEach(i=>{
+    const c=document.createElement('div');c.className='card';
+    const img=document.createElement('img');
+    img.src=IMAGES_PREFIX+encodeURIComponent(i.img);
+    img.onerror=()=>{img.src=PLACEHOLDER;}
+    const info=document.createElement('div');info.className='info';
+    info.innerHTML=`<h4>${i.name}</h4><div class='price'>Rp ${rupiah(i.price)}</div>`;
+    const add=document.createElement('button');add.className='btn btn-add';add.innerText='Tambah';
+    add.onclick=()=>addToCart(i);
+    c.appendChild(img);c.appendChild(info);c.appendChild(add);
+    grid.appendChild(c);
   });
 }
 
-function renderMissingList(){
-  const ul = el('missingImages');
-  ul.innerHTML = '';
-  if(missingSet.size === 0){ ul.innerHTML = '<li style="color:green">Semua gambar berhasil dimuat.</li>'; return; }
-  Array.from(missingSet).forEach(fn=>{
-    const li = document.createElement('li');
-    const url = IMAGES_PREFIX + encodeURIComponent(fn);
-    li.innerHTML = `<a target="_blank" href="${url}">${fn}</a>`;
-    ul.appendChild(li);
-  });
+function addToCart(item){
+  const f=cart.find(x=>x.id===item.id);
+  if(f)f.qty++;else cart.push({...item,qty:1});
+  renderCart();
 }
 
-/* init */
+function renderCart(){
+  const box=document.getElementById('cartItems');
+  if(cart.length===0){box.innerHTML='Belum ada item';document.getElementById('total').innerText='0';return;}
+  box.innerHTML=cart.map(i=>`<div>${i.name} x${i.qty} = Rp ${rupiah(i.qty*i.price)}</div>`).join('');
+  const total=cart.reduce((a,b)=>a+b.price*b.qty,0);
+  document.getElementById('total').innerText=rupiah(total);
+}
+
+function checkout(){
+  if(cart.length===0)return alert('Keranjang masih kosong!');
+  alert('Pesanan Anda sudah dicatat.');
+  cart=[];
+  renderCart();
+}
+
 function init(){
-  // set logo (attempt)
-  const logo = document.getElementById('logo');
-  logo.onerror = ()=>{ logo.src = PLACEHOLDER; };
-  logo.src = IMAGES_PREFIX + encodeURIComponent('logo.png');
-
+  const logo=document.getElementById('logo');
+  logo.src=IMAGES_PREFIX+encodeURIComponent('logo.png');
+  logo.onerror=()=>logo.src=PLACEHOLDER;
   renderCategories();
   renderMenu();
-  renderMissingList();
 }
 init();
-
 </script>
 </body>
 </html>
