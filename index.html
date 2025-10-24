@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Warung Pak Jhon Regency</title>
-
 <style>
 :root{
   --bg:#f6f7f8;--card:#fff;--muted:#6b7280;--accent:#f6b21a;--primary:#0f6a63;
@@ -16,7 +15,9 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);marg
 /* Header */
 header{background:linear-gradient(90deg,#0b4b47,#0f6a63);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px}
 header img{width:56px;height:56px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.1)}
+.brandwrap{display:flex;flex-direction:column;line-height:1.1}
 .brand{font-size:18px;font-weight:700}
+.addr{font-size:12px;opacity:.9}
 .grow{flex:1}
 .btn{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
 .btn-danger{background:#ef4444;color:#fff}
@@ -56,22 +57,31 @@ aside .panel{position:sticky;top:12px}
 .row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .summary{border-top:1px dashed var(--border);margin-top:10px;padding-top:10px}
 footer{text-align:center;margin:18px 0;color:var(--muted)}
-@media(max-width:980px){.wrap{grid-template-columns:1fr}.menu-grid{grid-template-columns:1fr}}
 
-/* ===== Thermal receipt (58mm) ===== */
-#receipt{display:none}
-.receipt{
-  width:58mm; padding:4mm 3mm; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  font-size:11px; color:#000; background:#fff;
-}
-.receipt h3{margin:0 0 6px;text-align:center;font-weight:800}
-.r-center{text-align:center}
-.r-line{border-top:1px dashed #000;margin:6px 0}
-.r-row{display:flex;justify-content:space-between}
-.r-small{font-size:10px}
+@media(max-width:980px){.wrap{grid-template-columns:1fr}.menu-grid{grid-template-columns:1fr}}
+@media (max-width:520px){ .addr{display:none} }
+
+/* ===== Invoice (panel nota seperti screenshot) ===== */
+.invoice-wrap{max-width:1100px;margin:24px auto;padding:0 16px}
+.invoice-card{background:var(--card);border-radius:12px;box-shadow:var(--shadow);padding:16px}
+.invoice-title{font-size:24px;font-weight:800;margin:0 0 12px}
+.invoice-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+.invoice-header{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 10px}
+.invoice-header img{width:64px;height:64px;border-radius:10px;object-fit:cover;border:1px solid #eee}
+.invoice-store{font-weight:800;font-size:18px}
+.invoice-line{border-top:1px solid var(--border);margin:10px 0}
+.inv-row{display:flex;justify-content:space-between;gap:12px}
+.inv-muted{color:var(--muted)}
+.inv-strong{font-weight:800}
+.inv-actions{display:flex;gap:10px;margin-top:14px}
+.btn-print{background:var(--accent);border:none;border-radius:8px;padding:10px 12px;font-weight:700;cursor:pointer}
+.btn-ghost{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer}
+
+/* Cetak: hanya panel invoice yang dicetak */
 @media print{
-  body>*:not(#receipt){ display:none !important; }
-  #receipt{ display:block !important; }
+  body>*:not(#invoiceView){ display:none !important; }
+  #invoiceView{ display:block !important; }
+  .invoice-card{ box-shadow:none; border:none; }
 }
 </style>
 </head>
@@ -79,7 +89,10 @@ footer{text-align:center;margin:18px 0;color:var(--muted)}
 
 <header id="appHeader" style="display:none">
   <img id="logo" alt="logo">
-  <div class="brand">Warung Pak Jhon Regency</div>
+  <div class="brandwrap">
+    <div class="brand">Warung Pak Jhon Regency</div>
+    <div class="addr">Ruko De Blossom Ville, Blok E3 No.11, Sepinggan</div>
+  </div>
   <div class="grow"></div>
   <div id="hello" style="opacity:.95"></div>
   <button class="btn btn-danger" onclick="logout()">Keluar</button>
@@ -88,7 +101,7 @@ footer{text-align:center;margin:18px 0;color:var(--muted)}
 <!-- ===== LOGIN VIEW ===== -->
 <section id="loginView" class="container">
   <div class="card-login">
-    <h2>Masuk / Buat Pesanan</h2>
+    <h2>Selamat datang di Warung Pak Jhon Regency</h2>
     <div class="muted" style="margin-bottom:10px">Isi data singkat di bawah untuk mulai memesan.</div>
     <form id="loginForm" class="form">
       <div class="row">
@@ -114,7 +127,7 @@ footer{text-align:center;margin:18px 0;color:var(--muted)}
         </div>
       </div>
       <button class="btn btn-primary" type="submit">Mulai Pesan</button>
-      <div class="muted" style="font-size:13px">Data tersimpan di perangkat (localStorage) dan tampil di nota.</div>
+      <div class="muted" style="font-size:13px">Data tersimpan di perangkat (localStorage) dan akan tampil di nota.</div>
     </form>
   </div>
 </section>
@@ -179,14 +192,42 @@ footer{text-align:center;margin:18px 0;color:var(--muted)}
   </aside>
 </main>
 
-<footer>© 2025 Warung Pak Jhon Regency</footer>
+<!-- ===== INVOICE VIEW (Ringkasan & Nota) ===== -->
+<section id="invoiceView" class="invoice-wrap" style="display:none">
+  <div class="invoice-card">
+    <h2 class="invoice-title">Ringkasan & Nota</h2>
+    <div class="invoice-box">
+      <div class="invoice-header">
+        <img id="invLogo" alt="logo nota">
+        <div class="invoice-store">Warung Pak Jhon Regency</div>
+      </div>
 
-<!-- ===== RECEIPT (PRINT) ===== -->
-<div id="receipt">
-  <div class="receipt" id="receiptBody">
-    <!-- content injected by JS -->
+      <div id="invMeta" class="inv-muted" style="line-height:1.6"></div>
+
+      <div class="invoice-line"></div>
+
+      <div id="invItems"></div>
+
+      <div class="invoice-line"></div>
+
+      <div class="inv-row"><div>Subtotal:</div><div id="invSub">Rp 0</div></div>
+      <div class="inv-row"><div>Ongkir:</div><div id="invShip">Rp 0</div></div>
+      <div class="inv-row inv-strong" style="font-size:18px"><div>Total:</div><div id="invTotal">Rp 0</div></div>
+
+      <div style="margin-top:10px">
+        <div class="inv-muted">Metode: <span id="invPay">-</span></div>
+        <div class="inv-muted" style="margin-top:14px;text-align:center">Terima kasih, pesanan Anda sedang diproses.</div>
+      </div>
+
+      <div class="inv-actions">
+        <button class="btn-print" onclick="printInvoice()">Cetak / Print Nota</button>
+        <button class="btn-ghost" onclick="backFromInvoice()">Kembali</button>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<footer>© 2025 Warung Pak Jhon Regency</footer>
 
 <script>
 /* ====== CONFIG & DATA ====== */
@@ -195,16 +236,17 @@ const PH='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w
 const rp = n => Number(n).toLocaleString('id-ID');
 
 const MENU = [
+  // Makanan
   {id:'nk_telur',       name:'Nasi Kuning - Telur',       price:13000, img:'nk_telur.jpg',                   category:'Makanan'},
   {id:'nk_daging',      name:'Nasi Kuning - Daging',      price:16000, img:'nk_daging.jpg',                  category:'Makanan'},
   {id:'nk_ikan',        name:'Nasi Kuning - Ikan',        price:20000, img:'nk_ikan.jpg',                    category:'Makanan'},
   {id:'nk_ayam_bakar',  name:'Nasi Kuning - Ayam Bakar',  price:16000, img:'nasi kuning ayam bakar.jpg',     category:'Makanan'},
   {id:'nk_ayam_krispi', name:'Nasi Kuning - Ayam Krispi', price:16000, img:'nk_ayam krispi.jpg',             category:'Makanan'},
-
+  // Paket
   {id:'pkt_tumpeng',    name:'Paket Tumpeng',             price:300000, img:'paket tumpeng.jpg',             category:'Paket'},
   {id:'pkt_hampers',    name:'Paket Hampers',             price:250000, img:'paket_hampers.jpg',             category:'Paket'},
   {id:'pkt_liwetan',    name:'Paket Liwetan',             price:150000, img:'paket_liwetan.jpg',             category:'Paket'},
-
+  // Minuman
   {id:'es_teh',         name:'Es Teh',                    price:3000,  img:'es teh.jpg',                     category:'Minuman'},
   {id:'es_mangga',      name:'Es Mangga',                 price:5000,  img:'es mangga.jpg',                  category:'Minuman'},
   {id:'es_alpukat',     name:'Es Alpukat',                price:5000,  img:'es alpukat.jpg',                 category:'Minuman'},
@@ -219,47 +261,29 @@ const CATS = [
   {label:'Minuman', pred:i=>i.category==='Minuman'},
 ];
 
-/* ====== STATE ====== */
-const state = {
-  user: null,
-  cart: []
-};
+/* ====== STATE & HELPERS ====== */
+const state = { user:null, cart:[] };
 const $ = id => document.getElementById(id);
-const setText = (id, v)=>$(id).textContent=v;
+const setText = (id,v)=>$(id).textContent=v;
 
-/* ====== LOGIN & INIT ====== */
-function showLogin(){
-  $('loginView').style.display='block';
-  $('appHeader').style.display='none';
-  $('appView').style.display='none';
-}
-function showApp(){
-  $('loginView').style.display='none';
-  $('appHeader').style.display='flex';
-  $('appView').style.display='grid';
-}
+/* ====== VIEW SWITCH ====== */
+function showLogin(){ $('loginView').style.display='block'; $('appHeader').style.display='none'; $('appView').style.display='none'; $('invoiceView').style.display='none'; }
+function showApp(){   $('loginView').style.display='none'; $('appHeader').style.display='flex'; $('appView').style.display='grid'; $('invoiceView').style.display='none'; }
+
+/* ====== USER STORAGE ====== */
 function loadUser(){
-  try{
-    const u = JSON.parse(localStorage.getItem('wpjr:user')||'null');
-    if(u && u.name && u.phone && u.table){ state.user=u; return true; }
-  }catch(e){}
-  return false;
+  try{ const u=JSON.parse(localStorage.getItem('wpjr:user')||'null'); if(u && u.name && u.phone && u.table){ state.user=u; return true; } }
+  catch(e){} return false;
 }
-function saveUser(u){
-  localStorage.setItem('wpjr:user', JSON.stringify(u));
-}
-function logout(){
-  localStorage.removeItem('wpjr:user');
-  state.user=null; state.cart=[];
-  showLogin();
-}
+function saveUser(u){ localStorage.setItem('wpjr:user', JSON.stringify(u)); }
+function logout(){ localStorage.removeItem('wpjr:user'); state.user=null; state.cart=[]; showLogin(); }
 
-/* ====== RENDER HEADER & GREETING ====== */
+/* ====== HEADER ====== */
 function renderHeader(){
   const logo=$('logo'); logo.src=IMG_PREFIX+encodeURIComponent('logo.jpg'); logo.onerror=()=>logo.src=PH;
   $('hello').textContent = `${state.user.name} • ${state.user.table}`;
   $('halo').textContent  = `Halo, ${state.user.name}`;
-  $('pax').value = (state.user.pax||'1').replace('+','');
+  $('pax').value  = (state.user.pax||'1').replace('+','');
   $('meja').value = state.user.table||'';
 }
 
@@ -270,24 +294,17 @@ function renderCategories(){
     const b=document.createElement('button');
     b.className='chip'+(i===0?' active':'');
     b.textContent=c.label;
-    b.onclick=()=>{
-      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active'); renderMenu();
-    };
+    b.onclick=()=>{ document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderMenu(); };
     wrap.appendChild(b);
   });
 }
-function activePred(){
-  const a=document.querySelector('.chip.active');
-  const lbl=a?a.textContent:'All';
-  return (CATS.find(x=>x.label===lbl)||CATS[0]).pred;
-}
+function activePred(){ const a=document.querySelector('.chip.active'); const lbl=a?a.textContent:'All'; return (CATS.find(x=>x.label===lbl)||CATS[0]).pred; }
 
 /* ====== MENU ====== */
 function renderMenu(){
   const grid=$('menuGrid'); grid.innerHTML='';
   const q=($('search').value||'').toLowerCase().trim();
-  let items = MENU.filter(i=>activePred()(i) && (q==='' || i.name.toLowerCase().includes(q)));
+  let items=MENU.filter(i=>activePred()(i) && (q==='' || i.name.toLowerCase().includes(q)));
   const s=$('sort').value;
   if(s==='price_asc') items.sort((a,b)=>a.price-b.price);
   if(s==='price_desc') items.sort((a,b)=>b.price-a.price);
@@ -307,21 +324,10 @@ function renderMenu(){
 }
 
 /* ====== CART ====== */
-function addToCart(i){
-  const f=state.cart.find(x=>x.id===i.id);
-  if(f) f.qty++; else state.cart.push({...i, qty:1});
-  renderCart();
-}
-function delFromCart(id){
-  state.cart = state.cart.filter(x=>x.id!==id);
-  renderCart();
-}
+function addToCart(i){ const f=state.cart.find(x=>x.id===i.id); if(f) f.qty++; else state.cart.push({...i,qty:1}); renderCart(); }
+function delFromCart(id){ state.cart=state.cart.filter(x=>x.id!==id); renderCart(); }
 function clearCart(){ state.cart=[]; renderCart(); }
-function ongkir(){
-  const ship=$('ship').value, loc=$('lokasi').value;
-  if(ship!=='Diantar') return 0;
-  return loc==='Dalam Regency'?5000:10000;
-}
+function ongkir(){ const ship=$('ship').value, loc=$('lokasi').value; if(ship!=='Diantar')return 0; return loc==='Dalam Regency'?5000:10000; }
 function renderCart(){
   const box=$('cartList');
   const n=state.cart.reduce((a,b)=>a+b.qty,0);
@@ -340,83 +346,88 @@ function renderCart(){
   setText('total',    rp(sub+og));
 }
 
-/* ====== CHECKOUT + PRINT RECEIPT (58mm) ====== */
-function buildReceiptHTML(){
-  const now = new Date();
-  const lines = state.cart.map(x=>{
-    const lineTotal = x.qty * x.price;
-    const name = x.name.length>20 ? x.name.slice(0,20) : x.name;
-    // rata kanan jumlah & harga
-    return `<div class="r-row"><div>${name} x${x.qty}</div><div>${rp(lineTotal)}</div></div>`;
-  }).join('');
-
-  const sub = state.cart.reduce((s,x)=>s+x.qty*x.price,0);
-  const og  = ongkir();
-  const ttl = sub+og;
-
-  return `
-    <h3>WARUNG PAK JHON</h3>
-    <div class="r-center r-small">JAGONYA BAKAR</div>
-    <div class="r-line"></div>
-    <div class="r-small">Nama : ${state.user.name}</div>
-    <div class="r-small">HP   : ${state.user.phone}</div>
-    <div class="r-small">Meja : ${state.user.table} • Orang: ${$('pax').value}</div>
-    <div class="r-small">Tgl  : ${now.toLocaleString('id-ID')}</div>
-    <div class="r-line"></div>
-    ${lines}
-    <div class="r-line"></div>
-    <div class="r-row"><div>Subtotal</div><div>${rp(sub)}</div></div>
-    <div class="r-row"><div>Ongkir</div><div>${rp(og)}</div></div>
-    <div class="r-row" style="font-weight:800"><div>TOTAL</div><div>${rp(ttl)}</div></div>
-    <div class="r-line"></div>
-    <div class="r-center">Terima kasih 😊</div>
-  `;
+/* ====== INVOICE (panel nota seperti screenshot) ====== */
+function orderId(){
+  const r = Math.floor(10000 + Math.random()*90000);
+  const t = new Date();
+  return `${r}${String(t.getMinutes()).padStart(2,'0')}`;
 }
+function showInvoice(){
+  // logo
+  const invLogo = $('invLogo');
+  invLogo.src = IMG_PREFIX + encodeURIComponent('logo.jpg');
+  invLogo.onerror = ()=> invLogo.src = PH;
+
+  // meta
+  const now = new Date();
+  const metaHtml = [
+    `No: ${orderId()}`,
+    `Nama: ${state.user.name}`,
+    `HP: ${state.user.phone}`,
+    `Tgl: ${now.toLocaleDateString('id-ID')}, ${now.toLocaleTimeString('id-ID')}`
+  ].join('<br>');
+  $('invMeta').innerHTML = metaHtml;
+
+  // items
+  const itemsHtml = state.cart.map(x=>(
+    `<div class="inv-row" style="padding:6px 0;border-bottom:1px solid var(--border)">
+      <div>${x.name} x${x.qty}</div>
+      <div>Rp ${rp(x.qty * x.price)}</div>
+    </div>`
+  )).join('');
+  $('invItems').innerHTML = itemsHtml || '<div class="inv-muted">Tidak ada item.</div>';
+
+  // totals
+  const sub = state.cart.reduce((s,it)=>s+it.qty*it.price,0);
+  const og  = ongkir();
+  const ttl = sub + og;
+  $('invSub').textContent   = `Rp ${rp(sub)}`;
+  $('invShip').textContent  = `Rp ${rp(og)}`;
+  $('invTotal').textContent = `Rp ${rp(ttl)}`;
+  $('invPay').innerText     = $('pay').value || '-';
+
+  // tampilkan view invoice
+  $('appView').style.display = 'none';
+  $('invoiceView').style.display = 'block';
+}
+function printInvoice(){
+  window.print();
+  clearCart();
+  backFromInvoice();
+}
+function backFromInvoice(){
+  $('invoiceView').style.display = 'none';
+  $('appView').style.display     = 'grid';
+}
+
+/* ====== CHECKOUT ====== */
 function checkout(){
   if(state.cart.length===0){ alert('Keranjang kosong'); return; }
-  // simpan perubahan pax/meja jika user ubah di panel kanan
-  const mejaSel = $('meja').value || state.user.table;
-  const paxSel  = $('pax').value || state.user.pax;
-  state.user = {...state.user, table: mejaSel, pax: paxSel};
-  saveUser(state.user);
-
-  const body = $('receiptBody');
-  body.innerHTML = buildReceiptHTML();
-  // print mode
-  window.print();
-  // reset cart setelah print
-  clearCart();
+  // simpan perubahan jika user ubah di panel kanan
+  const mejaSel=$('meja').value||state.user.table;
+  const paxSel =$('pax').value||state.user.pax;
+  state.user={...state.user, table:mejaSel, pax:paxSel}; saveUser(state.user);
+  // tampilkan panel nota
+  showInvoice();
 }
 
-/* ====== STARTUP ====== */
-document.getElementById('loginForm').addEventListener('submit', (e)=>{
+/* ====== BOOT ====== */
+$('loginForm').addEventListener('submit',(e)=>{
   e.preventDefault();
-  const name = $('fName').value.trim();
-  const phone= $('fPhone').value.trim();
-  const table= $('fTable').value.trim();
-  const pax  = $('fPax').value.trim();
-  if(!name || !phone || !table){ alert('Nama, No. HP, dan Meja wajib diisi.'); return; }
-  state.user = { name, phone, table, pax, ts: Date.now() };
-  saveUser(state.user);
-  // masuk app
+  const name=$('fName').value.trim();
+  const phone=$('fPhone').value.trim();
+  const table=$('fTable').value.trim();
+  const pax=$('fPax').value.trim();
+  if(!name||!phone||!table){ alert('Nama, No. HP, dan Meja wajib diisi.'); return; }
+  state.user={name,phone,table,pax,ts:Date.now()}; saveUser(state.user);
   showApp(); renderHeader(); renderCategories(); renderMenu(); renderCart();
 });
-
-// auto login jika sudah ada data
-(function boot(){
-  const logoMini=document.createElement('img');
-  logoMini.style.display='none';
-  document.body.appendChild(logoMini);
-  // set header logo saat app tampil
-  if(loadUser()){
-    showApp();
-    renderHeader(); renderCategories(); renderMenu(); renderCart();
-  }else{
-    showLogin();
-  }
+(function init(){
+  if(loadUser()){ showApp(); renderHeader(); renderCategories(); renderMenu(); renderCart(); }
+  else{ showLogin(); }
+  $('lokasi').addEventListener('change', renderCart);
+  $('ship').addEventListener('change', renderCart);
 })();
-$('lokasi').addEventListener('change', renderCart);
-$('ship').addEventListener('change', renderCart);
 </script>
 </body>
 </html>
