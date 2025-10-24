@@ -4,20 +4,39 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Warung Pak Jhon Regency</title>
+
 <style>
 :root{
-  --bg:#f6f7f8; --card:#fff; --muted:#6b7280; --accent:#f6b21a; --primary:#0f6a63;
-  --border:#e9ecef; --shadow:0 6px 20px rgba(15,31,41,.06)
+  --bg:#f6f7f8;--card:#fff;--muted:#6b7280;--accent:#f6b21a;--primary:#0f6a63;
+  --border:#e9ecef;--shadow:0 6px 20px rgba(15,31,41,.06)
 }
 *{box-sizing:border-box}
 body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);margin:0;color:#111}
+
+/* Header */
 header{background:linear-gradient(90deg,#0b4b47,#0f6a63);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:12px}
 header img{width:56px;height:56px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.1)}
-header .brand{font-size:18px;font-weight:700}
+.brand{font-size:18px;font-weight:700}
+.grow{flex:1}
+.btn{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
+.btn-danger{background:#ef4444;color:#fff}
+
+/* Containers */
 .wrap{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:1fr 340px;gap:20px}
 .panel{background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
 .hero{grid-column:1 / span 2;margin-bottom:8px}
 h2{margin:0 0 12px}
+
+/* Login */
+.container{max-width:680px;margin:24px auto;padding:0 16px}
+.card-login{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:20px}
+.muted{color:var(--muted)}
+.form{display:grid;gap:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px}
+.btn-primary{background:var(--accent);font-weight:700}
+
+/* Menu */
 .cats{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
 .chip{padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:#fff;cursor:pointer}
 .chip.active{background:var(--primary);color:#fff;border-color:transparent}
@@ -29,42 +48,87 @@ h2{margin:0 0 12px}
 .info{flex:1}
 .title{font-weight:700}
 .price{margin-top:6px;font-weight:700}
-.btn{padding:8px 10px;border-radius:8px;border:none;cursor:pointer}
-.btn-add{background:var(--accent);color:#111;font-weight:700}
+.btn-add{background:var(--accent);font-weight:700}
 .btn-outline{background:#fff;border:1px solid var(--border)}
 aside .panel{position:sticky;top:12px}
 .label{font-size:12px;color:var(--muted);margin:10px 0 4px}
-.select, .input{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.select,.input{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .summary{border-top:1px dashed var(--border);margin-top:10px;padding-top:10px}
-.meja{display:flex;flex-wrap:wrap;gap:8px}
-.meja button{padding:8px 10px;border:1px solid var(--border);background:#fff;border-radius:8px;cursor:pointer}
-.meja button.active{background:#def7f3;border-color:#9be0d4}
 footer{text-align:center;margin:18px 0;color:var(--muted)}
 @media(max-width:980px){.wrap{grid-template-columns:1fr}.menu-grid{grid-template-columns:1fr}}
+
+/* ===== Thermal receipt (58mm) ===== */
+#receipt{display:none}
+.receipt{
+  width:58mm; padding:4mm 3mm; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size:11px; color:#000; background:#fff;
+}
+.receipt h3{margin:0 0 6px;text-align:center;font-weight:800}
+.r-center{text-align:center}
+.r-line{border-top:1px dashed #000;margin:6px 0}
+.r-row{display:flex;justify-content:space-between}
+.r-small{font-size:10px}
+@media print{
+  body>*:not(#receipt){ display:none !important; }
+  #receipt{ display:block !important; }
+}
 </style>
 </head>
 <body>
 
-<header>
+<header id="appHeader" style="display:none">
   <img id="logo" alt="logo">
   <div class="brand">Warung Pak Jhon Regency</div>
-  <div style="margin-left:auto;color:#fff;opacity:.9">Meja: <b id="badge-meja">12</b> kosong • <b id="badge-terpakai">0</b> terpakai</div>
+  <div class="grow"></div>
+  <div id="hello" style="opacity:.95"></div>
+  <button class="btn btn-danger" onclick="logout()">Keluar</button>
 </header>
 
-<main class="wrap">
-  <!-- Salam -->
+<!-- ===== LOGIN VIEW ===== -->
+<section id="loginView" class="container">
+  <div class="card-login">
+    <h2>Masuk / Buat Pesanan</h2>
+    <div class="muted" style="margin-bottom:10px">Isi data singkat di bawah untuk mulai memesan.</div>
+    <form id="loginForm" class="form">
+      <div class="row">
+        <div><label>Nama</label><input id="fName" required placeholder="Nama lengkap"></div>
+        <div><label>No. HP (WhatsApp)</label><input id="fPhone" required inputmode="tel" placeholder="08xxxx"></div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Pilih Meja</label>
+          <select id="fTable" required>
+            <option value="">— Pilih Meja —</option>
+            <option>Meja 1</option><option>Meja 2</option><option>Meja 3</option><option>Meja 4</option>
+            <option>Meja 5</option><option>Meja 6</option><option>Meja 7</option><option>Meja 8</option>
+            <option>Meja 9</option><option>Meja 10</option><option>Meja 11</option><option>Meja 12</option>
+          </select>
+        </div>
+        <div>
+          <label>Jumlah Orang</label>
+          <select id="fPax">
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8+</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Mulai Pesan</button>
+      <div class="muted" style="font-size:13px">Data tersimpan di perangkat (localStorage) dan tampil di nota.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ===== APP VIEW ===== -->
+<main id="appView" class="wrap" style="display:none">
   <section class="panel hero">
-    <h2>Halo, Demo User</h2>
-    <div style="color:var(--muted)">Silakan pilih kategori, tambah ke keranjang, lalu atur pengiriman & checkout.</div>
+    <h2 id="halo">Halo, Demo User</h2>
+    <div class="muted">Silakan pilih kategori, tambah ke keranjang, lalu atur pengiriman & checkout.</div>
   </section>
 
-  <!-- MENU -->
   <section class="panel">
     <h2>Daftar Menu</h2>
-
     <div id="categoryButtons" class="cats"></div>
-
     <div class="controls">
       <input id="search" placeholder="Cari menu..." oninput="renderMenu()">
       <select id="sort" onchange="renderMenu()">
@@ -74,93 +138,73 @@ footer{text-align:center;margin:18px 0;color:var(--muted)}
         <option value="name_asc">Nama A→Z</option>
       </select>
     </div>
-
     <div id="menuGrid" class="menu-grid"></div>
   </section>
 
-  <!-- KERANJANG -->
   <aside>
     <div class="panel">
-      <h2>Keranjang <span style="color:var(--muted);font-weight:400">(0)</span></h2>
+      <h2>Keranjang <span id="cartCount" style="color:var(--muted);font-weight:400">(0)</span></h2>
       <div id="cartList" style="min-height:50px;color:var(--muted)">Belum ada item</div>
-
       <div class="label">Lokasi Pengiriman</div>
-      <select id="lokasi" class="select">
-        <option>Dalam Regency</option>
-        <option>Luar Regency</option>
-      </select>
-
-      <div class="row">
+      <select id="lokasi" class="select"><option>Dalam Regency</option><option>Luar Regency</option></select>
+      <div class="row-2">
         <div>
           <div class="label">Pengiriman</div>
-          <select id="ship" class="select">
-            <option>Makan di Tempat</option>
-            <option>Take Away</option>
-            <option>Diantar</option>
-          </select>
+          <select id="ship" class="select"><option>Makan di Tempat</option><option>Take Away</option><option>Diantar</option></select>
         </div>
         <div>
           <div class="label">Jumlah Orang</div>
           <input id="pax" class="input" type="number" min="1" value="1">
         </div>
       </div>
-
       <div class="label">No. Meja</div>
       <select id="meja" class="select">
-        <option value="">Pilih meja (opsional)</option>
+        <option value="">(opsional)</option>
         <option>Meja 1</option><option>Meja 2</option><option>Meja 3</option><option>Meja 4</option>
         <option>Meja 5</option><option>Meja 6</option><option>Meja 7</option><option>Meja 8</option>
         <option>Meja 9</option><option>Meja 10</option><option>Meja 11</option><option>Meja 12</option>
       </select>
-
       <div class="label">Metode Pembayaran</div>
-      <select id="pay" class="select">
-        <option>Tunai</option><option>QRIS</option><option>Transfer</option>
-      </select>
-
+      <select id="pay" class="select"><option>Tunai</option><option>QRIS</option><option>Transfer</option></select>
       <div class="summary">
         <div>Subtotal: Rp <span id="subtotal">0</span></div>
         <div>Ongkir: Rp <span id="ongkir">0</span></div>
         <div style="font-weight:800;margin-top:6px">Total: Rp <span id="total">0</span></div>
       </div>
-
       <div style="display:flex;gap:8px;margin-top:12px">
         <button class="btn btn-add" style="flex:1" onclick="checkout()">Checkout</button>
         <button class="btn btn-outline" onclick="clearCart()">Kosongkan</button>
       </div>
     </div>
   </aside>
-
-  <!-- PANEL MEJA -->
-  <section class="panel" style="grid-column:1 / span 2">
-    <h3>Panel Meja</h3>
-    <div class="meja" id="panelMeja"></div>
-  </section>
 </main>
 
 <footer>© 2025 Warung Pak Jhon Regency</footer>
 
-<script>
-/* ====== KONFIG ====== */
-const IMAGES_PREFIX = 'images/';
-const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" fill="#bbb" dominant-baseline="middle" text-anchor="middle" font-size="20">No Image</text></svg>');
-const rupiah = n => Number(n).toLocaleString('id-ID');
+<!-- ===== RECEIPT (PRINT) ===== -->
+<div id="receipt">
+  <div class="receipt" id="receiptBody">
+    <!-- content injected by JS -->
+  </div>
+</div>
 
-/* ====== DATA MENU (nama file harus PERSIS) ====== */
+<script>
+/* ====== CONFIG & DATA ====== */
+const IMG_PREFIX='images/';
+const PH='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" fill="#bbb" dominant-baseline="middle" text-anchor="middle" font-size="20">No Image</text></svg>');
+const rp = n => Number(n).toLocaleString('id-ID');
+
 const MENU = [
-  // Makanan
   {id:'nk_telur',       name:'Nasi Kuning - Telur',       price:13000, img:'nk_telur.jpg',                   category:'Makanan'},
   {id:'nk_daging',      name:'Nasi Kuning - Daging',      price:16000, img:'nk_daging.jpg',                  category:'Makanan'},
   {id:'nk_ikan',        name:'Nasi Kuning - Ikan',        price:20000, img:'nk_ikan.jpg',                    category:'Makanan'},
   {id:'nk_ayam_bakar',  name:'Nasi Kuning - Ayam Bakar',  price:16000, img:'nasi kuning ayam bakar.jpg',     category:'Makanan'},
   {id:'nk_ayam_krispi', name:'Nasi Kuning - Ayam Krispi', price:16000, img:'nk_ayam krispi.jpg',             category:'Makanan'},
 
-  // Paket
   {id:'pkt_tumpeng',    name:'Paket Tumpeng',             price:300000, img:'paket tumpeng.jpg',             category:'Paket'},
   {id:'pkt_hampers',    name:'Paket Hampers',             price:250000, img:'paket_hampers.jpg',             category:'Paket'},
   {id:'pkt_liwetan',    name:'Paket Liwetan',             price:150000, img:'paket_liwetan.jpg',             category:'Paket'},
 
-  // Minuman
   {id:'es_teh',         name:'Es Teh',                    price:3000,  img:'es teh.jpg',                     category:'Minuman'},
   {id:'es_mangga',      name:'Es Mangga',                 price:5000,  img:'es mangga.jpg',                  category:'Minuman'},
   {id:'es_alpukat',     name:'Es Alpukat',                price:5000,  img:'es alpukat.jpg',                 category:'Minuman'},
@@ -168,149 +212,211 @@ const MENU = [
   {id:'es_kuwud',       name:'Es Kuwud',                  price:5000,  img:'eskuwud.jpg',                    category:'Minuman'}
 ];
 
-const CATEGORY_BUTTONS = [
-  {label:'All',      pred: ()=>true},
-  {label:'Makanan',  pred: it=>it.category==='Makanan'},
-  {label:'Paket',    pred: it=>it.category==='Paket'},
-  {label:'Minuman',  pred: it=>it.category==='Minuman'}
+const CATS = [
+  {label:'All', pred:()=>true},
+  {label:'Makanan', pred:i=>i.category==='Makanan'},
+  {label:'Paket', pred:i=>i.category==='Paket'},
+  {label:'Minuman', pred:i=>i.category==='Minuman'},
 ];
 
-/* ====== HELPERS ====== */
+/* ====== STATE ====== */
+const state = {
+  user: null,
+  cart: []
+};
 const $ = id => document.getElementById(id);
-function setText(id, val){ $(id).textContent = val; }
+const setText = (id, v)=>$(id).textContent=v;
 
-/* ====== KATEGORI ====== */
+/* ====== LOGIN & INIT ====== */
+function showLogin(){
+  $('loginView').style.display='block';
+  $('appHeader').style.display='none';
+  $('appView').style.display='none';
+}
+function showApp(){
+  $('loginView').style.display='none';
+  $('appHeader').style.display='flex';
+  $('appView').style.display='grid';
+}
+function loadUser(){
+  try{
+    const u = JSON.parse(localStorage.getItem('wpjr:user')||'null');
+    if(u && u.name && u.phone && u.table){ state.user=u; return true; }
+  }catch(e){}
+  return false;
+}
+function saveUser(u){
+  localStorage.setItem('wpjr:user', JSON.stringify(u));
+}
+function logout(){
+  localStorage.removeItem('wpjr:user');
+  state.user=null; state.cart=[];
+  showLogin();
+}
+
+/* ====== RENDER HEADER & GREETING ====== */
+function renderHeader(){
+  const logo=$('logo'); logo.src=IMG_PREFIX+encodeURIComponent('logo.jpg'); logo.onerror=()=>logo.src=PH;
+  $('hello').textContent = `${state.user.name} • ${state.user.table}`;
+  $('halo').textContent  = `Halo, ${state.user.name}`;
+  $('pax').value = (state.user.pax||'1').replace('+','');
+  $('meja').value = state.user.table||'';
+}
+
+/* ====== CATEGORIES ====== */
 function renderCategories(){
-  const wrap = $('categoryButtons'); wrap.innerHTML='';
-  CATEGORY_BUTTONS.forEach((c,i)=>{
-    const b = document.createElement('button');
-    b.className = 'chip' + (i===0 ? ' active':'');
-    b.innerText = c.label;
-    b.onclick = ()=>{
+  const wrap=$('categoryButtons'); wrap.innerHTML='';
+  CATS.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='chip'+(i===0?' active':'');
+    b.textContent=c.label;
+    b.onclick=()=>{
       document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      renderMenu();
+      b.classList.add('active'); renderMenu();
     };
     wrap.appendChild(b);
   });
 }
-function currentPred(){
-  const a = document.querySelector('.chip.active');
-  const label = a ? a.innerText : 'All';
-  return (CATEGORY_BUTTONS.find(c=>c.label===label)||CATEGORY_BUTTONS[0]).pred;
+function activePred(){
+  const a=document.querySelector('.chip.active');
+  const lbl=a?a.textContent:'All';
+  return (CATS.find(x=>x.label===lbl)||CATS[0]).pred;
 }
 
 /* ====== MENU ====== */
 function renderMenu(){
-  const grid = $('menuGrid'); grid.innerHTML='';
-  const q = ($('search').value||'').trim().toLowerCase();
-  let items = MENU.filter(it => currentPred()(it) && (q==='' || it.name.toLowerCase().includes(q)));
+  const grid=$('menuGrid'); grid.innerHTML='';
+  const q=($('search').value||'').toLowerCase().trim();
+  let items = MENU.filter(i=>activePred()(i) && (q==='' || i.name.toLowerCase().includes(q)));
+  const s=$('sort').value;
+  if(s==='price_asc') items.sort((a,b)=>a.price-b.price);
+  if(s==='price_desc') items.sort((a,b)=>b.price-a.price);
+  if(s==='name_asc') items.sort((a,b)=>a.name.localeCompare(b.name));
+  if(items.length===0){ grid.innerHTML='<div style="padding:12px;color:#777">Tidak ada menu.</div>'; return; }
 
-  const sort = $('sort').value;
-  if(sort==='price_asc') items.sort((a,b)=>a.price-b.price);
-  if(sort==='price_desc') items.sort((a,b)=>b.price-a.price);
-  if(sort==='name_asc') items.sort((a,b)=>a.name.localeCompare(b.name));
-
-  if(items.length===0){ grid.innerHTML='<div style="padding:12px;color:#777">Tidak ada menu pada kategori ini.</div>'; return; }
-
-  items.forEach(it=>{
-    const card = document.createElement('div'); card.className='card';
-    const img = document.createElement('img');
-    img.src = IMAGES_PREFIX + encodeURIComponent(it.img);
-    img.alt = it.name;
-    img.onerror = ()=>{ img.src = PLACEHOLDER; };
-    const info = document.createElement('div'); info.className='info';
-    info.innerHTML = `<div class="title">${it.name}</div><div class="price">Rp ${rupiah(it.price)}</div>`;
-    const col = document.createElement('div'); col.style.display='flex'; col.style.flexDirection='column'; col.style.gap='8px';
-    const add = document.createElement('button'); add.className='btn btn-add'; add.innerText='Tambah'; add.onclick=()=>addToCart(it);
-    const plus = document.createElement('button'); plus.className='btn btn-outline'; plus.innerText='+1 & Lihat'; plus.onclick=()=>addToCart(it);
-    col.appendChild(add); col.appendChild(plus);
-    card.appendChild(img); card.appendChild(info); card.appendChild(col);
-    grid.appendChild(card);
+  items.forEach(i=>{
+    const card=document.createElement('div'); card.className='card';
+    const im=document.createElement('img'); im.src=IMG_PREFIX+encodeURIComponent(i.img); im.onerror=()=>im.src=PH;
+    const info=document.createElement('div'); info.className='info';
+    info.innerHTML=`<div class="title">${i.name}</div><div class="price">Rp ${rp(i.price)}</div>`;
+    const col=document.createElement('div'); col.style.display='flex'; col.style.flexDirection='column'; col.style.gap='8px';
+    const add=document.createElement('button'); add.className='btn btn-add'; add.textContent='Tambah'; add.onclick=()=>addToCart(i);
+    const plus=document.createElement('button'); plus.className='btn btn-outline'; plus.textContent='+1 & Lihat'; plus.onclick=()=>addToCart(i);
+    col.append(add,plus); card.append(im,info,col); grid.append(card);
   });
 }
 
 /* ====== CART ====== */
-let cart = [];
-function addToCart(it){
-  const f = cart.find(x=>x.id===it.id);
-  if(f) f.qty++; else cart.push({...it, qty:1});
+function addToCart(i){
+  const f=state.cart.find(x=>x.id===i.id);
+  if(f) f.qty++; else state.cart.push({...i, qty:1});
   renderCart();
 }
-function removeFromCart(id){
-  cart = cart.filter(x=>x.id!==id);
+function delFromCart(id){
+  state.cart = state.cart.filter(x=>x.id!==id);
   renderCart();
 }
-function clearCart(){ cart=[]; renderCart(); }
-function calcOngkir(){
-  const ship = $('ship').value;
-  const loc  = $('lokasi').value;
+function clearCart(){ state.cart=[]; renderCart(); }
+function ongkir(){
+  const ship=$('ship').value, loc=$('lokasi').value;
   if(ship!=='Diantar') return 0;
-  return (loc==='Dalam Regency') ? 5000 : 10000;
+  return loc==='Dalam Regency'?5000:10000;
 }
 function renderCart(){
-  const list = $('cartList');
-  const count = cart.reduce((a,b)=>a+b.qty,0);
-  document.querySelector('aside h2 span').innerText = `(${count})`;
-
-  if(cart.length===0){ list.innerHTML='Belum ada item'; setText('subtotal','0'); setText('ongkir','0'); setText('total','0'); return; }
-
-  list.innerHTML = cart.map(x=>`
+  const box=$('cartList');
+  const n=state.cart.reduce((a,b)=>a+b.qty,0);
+  $('cartCount').textContent=`(${n})`;
+  if(state.cart.length===0){ box.textContent='Belum ada item'; setText('subtotal','0'); setText('ongkir','0'); setText('total','0'); return; }
+  box.innerHTML=state.cart.map(x=>`
     <div style="display:flex;align-items:center;gap:8px;margin:6px 0">
       <div style="flex:1">${x.name} <span style="color:#777">x${x.qty}</span></div>
-      <div style="width:110px;text-align:right">Rp ${rupiah(x.qty*x.price)}</div>
-      <button class="btn btn-outline" onclick="removeFromCart('${x.id}')">X</button>
-    </div>
-  `).join('');
+      <div style="width:110px;text-align:right">Rp ${rp(x.qty*x.price)}</div>
+      <button class="btn btn-outline" onclick="delFromCart('${x.id}')">X</button>
+    </div>`).join('');
+  const sub=state.cart.reduce((s,x)=>s+x.qty*x.price,0);
+  const og=ongkir();
+  setText('subtotal', rp(sub));
+  setText('ongkir',   rp(og));
+  setText('total',    rp(sub+og));
+}
 
-  const sub = cart.reduce((s,x)=>s+x.qty*x.price,0);
-  const ong = calcOngkir();
-  setText('subtotal', rupiah(sub));
-  setText('ongkir',   rupiah(ong));
-  setText('total',    rupiah(sub+ong));
+/* ====== CHECKOUT + PRINT RECEIPT (58mm) ====== */
+function buildReceiptHTML(){
+  const now = new Date();
+  const lines = state.cart.map(x=>{
+    const lineTotal = x.qty * x.price;
+    const name = x.name.length>20 ? x.name.slice(0,20) : x.name;
+    // rata kanan jumlah & harga
+    return `<div class="r-row"><div>${name} x${x.qty}</div><div>${rp(lineTotal)}</div></div>`;
+  }).join('');
+
+  const sub = state.cart.reduce((s,x)=>s+x.qty*x.price,0);
+  const og  = ongkir();
+  const ttl = sub+og;
+
+  return `
+    <h3>WARUNG PAK JHON</h3>
+    <div class="r-center r-small">JAGONYA BAKAR</div>
+    <div class="r-line"></div>
+    <div class="r-small">Nama : ${state.user.name}</div>
+    <div class="r-small">HP   : ${state.user.phone}</div>
+    <div class="r-small">Meja : ${state.user.table} • Orang: ${$('pax').value}</div>
+    <div class="r-small">Tgl  : ${now.toLocaleString('id-ID')}</div>
+    <div class="r-line"></div>
+    ${lines}
+    <div class="r-line"></div>
+    <div class="r-row"><div>Subtotal</div><div>${rp(sub)}</div></div>
+    <div class="r-row"><div>Ongkir</div><div>${rp(og)}</div></div>
+    <div class="r-row" style="font-weight:800"><div>TOTAL</div><div>${rp(ttl)}</div></div>
+    <div class="r-line"></div>
+    <div class="r-center">Terima kasih 😊</div>
+  `;
 }
 function checkout(){
-  if(cart.length===0) return alert('Keranjang kosong');
-  const meja = $('meja').value || '-';
-  alert(`Pesanan diterima.\nItem: ${cart.length}\nTotal: Rp ${$('total').innerText}\nMeja: ${meja}`);
+  if(state.cart.length===0){ alert('Keranjang kosong'); return; }
+  // simpan perubahan pax/meja jika user ubah di panel kanan
+  const mejaSel = $('meja').value || state.user.table;
+  const paxSel  = $('pax').value || state.user.pax;
+  state.user = {...state.user, table: mejaSel, pax: paxSel};
+  saveUser(state.user);
+
+  const body = $('receiptBody');
+  body.innerHTML = buildReceiptHTML();
+  // print mode
+  window.print();
+  // reset cart setelah print
   clearCart();
 }
 
-/* ====== PANEL MEJA (dummy toggle) ====== */
-const mejaState = Array.from({length:12}, (_,i)=>({no:i+1, taken:false}));
-function renderPanelMeja(){
-  const box = $('panelMeja'); box.innerHTML='';
-  mejaState.forEach(m=>{
-    const b = document.createElement('button');
-    b.innerText = `Meja ${m.no}`;
-    b.className = m.taken ? 'active':'';
-    b.onclick = ()=>{
-      m.taken = !m.taken;
-      const kosong = mejaState.filter(x=>!x.taken).length;
-      const pakai  = mejaState.filter(x=> x.taken).length;
-      setText('badge-meja', kosong);
-      setText('badge-terpakai', pakai);
-      renderPanelMeja();
-    };
-    box.appendChild(b);
-  });
-}
+/* ====== STARTUP ====== */
+document.getElementById('loginForm').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const name = $('fName').value.trim();
+  const phone= $('fPhone').value.trim();
+  const table= $('fTable').value.trim();
+  const pax  = $('fPax').value.trim();
+  if(!name || !phone || !table){ alert('Nama, No. HP, dan Meja wajib diisi.'); return; }
+  state.user = { name, phone, table, pax, ts: Date.now() };
+  saveUser(state.user);
+  // masuk app
+  showApp(); renderHeader(); renderCategories(); renderMenu(); renderCart();
+});
 
-/* ====== INIT ====== */
-function init(){
-  const logo = $('logo');
-  logo.onerror = ()=>{ logo.src = PLACEHOLDER; };
-  logo.src = IMAGES_PREFIX + encodeURIComponent('logo.jpg');
-
-  renderCategories();
-  renderMenu();
-  renderCart();
-  renderPanelMeja();
-
-  $('lokasi').addEventListener('change', renderCart);
-  $('ship').addEventListener('change', renderCart);
-}
-init();
+// auto login jika sudah ada data
+(function boot(){
+  const logoMini=document.createElement('img');
+  logoMini.style.display='none';
+  document.body.appendChild(logoMini);
+  // set header logo saat app tampil
+  if(loadUser()){
+    showApp();
+    renderHeader(); renderCategories(); renderMenu(); renderCart();
+  }else{
+    showLogin();
+  }
+})();
+$('lokasi').addEventListener('change', renderCart);
+$('ship').addEventListener('change', renderCart);
 </script>
 </body>
 </html>
